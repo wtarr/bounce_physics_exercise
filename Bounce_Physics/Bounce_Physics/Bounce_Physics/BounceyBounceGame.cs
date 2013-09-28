@@ -18,6 +18,8 @@ namespace Bounce_Physics
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        public static List<IDrawable> ComponentList; 
         
         private Camera _camera;
         
@@ -25,7 +27,7 @@ namespace Bounce_Physics
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            
+            ComponentList = new List<IDrawable>();
         }
         
         protected override void Initialize()
@@ -33,8 +35,12 @@ namespace Bounce_Physics
             // TODO: Add your initialization logic here
             _camera = new Camera(this, graphics);
 
-            Sphere s1 = new Sphere(this, _camera, new Vector3(-20, 0, 0), new Vector3(10, 0, 0));
-            Sphere s2 = new Sphere(this, _camera, new Vector3(20, 0, 0), new Vector3(-10, 0, 0));
+            Sphere s1 = new Sphere(this, _camera, new Vector3(-20, 0, -2), new Vector3(10, 0, 0), 10);
+            Sphere s2 = new Sphere(this, _camera, new Vector3(20, 0, 2), new Vector3(-10, 0, 0), 5);
+            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 0, -20), new Vector3(0, 0, 10), 5);
+
+            ComponentList.Add(s1);
+            ComponentList.Add(s2);
 
             base.Initialize();
         }

@@ -8,7 +8,7 @@ namespace Bounce_Physics
 {
     interface IamASphere
     {
-        bool HasCollisionOccured(Sphere g1, Sphere g2);
+        bool HasCollisionOccured();
 
     }
 }

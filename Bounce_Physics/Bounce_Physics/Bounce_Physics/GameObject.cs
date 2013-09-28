@@ -19,12 +19,15 @@ namespace Bounce_Physics
 
         private Camera _camera;
         protected Model Model;
-        protected BoundingSphere BoundingRadius;
+        protected BoundingSphere BoundingSphere;
+        protected Vector3 defuseColor;
+
         
 
         public float Rotation { get; set; }
         public Vector3 Position { get; set; }
         public Vector3 Velocity { get; set; }
+        public float Mass { get; set; }
 
         public GameObject(Game game, Camera camera)
             : base(game)
@@ -32,6 +35,7 @@ namespace Bounce_Physics
             _camera = camera;
             Rotation = 0.0f;
             Position = Vector3.Zero;
+            defuseColor = new Vector3(0, 0, 255);
 
             game.Components.Add(this);
 
@@ -76,7 +80,7 @@ namespace Bounce_Physics
                                        Matrix.CreateTranslation(Position);
                         effect.View = _camera.CreateView();
                         effect.Projection = _camera.CreatePerspectiveFieldOfView();
-                        effect.DiffuseColor = new Vector3(0, 0, 255);
+                        effect.DiffuseColor = defuseColor;
                     }
 
                     mesh.Draw();
