@@ -45,6 +45,8 @@ namespace Bounce_Physics
 
             Model = _game.Content.Load<Model>("Models\\sphere");
             BoundingSphere.Radius = Model.Meshes[0].BoundingSphere.Radius;
+            
+
             Console.WriteLine(BoundingSphere.Radius);
 
             base.LoadContent();
@@ -74,7 +76,7 @@ namespace Bounce_Physics
 
         public bool HasCollisionOccured()
         {
-            foreach (var sphere in BounceyBounceGame.ComponentList)
+            foreach (var sphere in BounceyBounceGame.CollidableList)
             {
                 Sphere s = sphere as Sphere;
                 if (this.BoundingSphere.Intersects(s.BoundingSphere) && s!= this)
