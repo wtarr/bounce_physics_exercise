@@ -59,12 +59,12 @@ namespace Bounce_Physics
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
+            var s = gameTime.TotalGameTime.Milliseconds/1000.0f;
             Position += Velocity*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
 
             BoundingSphere.Center = Position;
 
-            HasCollisionOccured();
+            HasCollisionOccured(gameTime);
 
             base.Update(gameTime);
         }
@@ -74,7 +74,7 @@ namespace Bounce_Physics
             base.Draw(gameTime);
         }
 
-        public bool HasCollisionOccured()
+        public bool HasCollisionOccured(GameTime gt)
         {
             foreach (var sphere in BounceyBounceGame.CollidableList)
             {
@@ -82,7 +82,7 @@ namespace Bounce_Physics
                 if (this.BoundingSphere.Intersects(s.BoundingSphere) && s!= this)
                 {
                     s.defuseColor = new Vector3(255, 0, 0);
-                    CalculateFinalVelocity(this, s);
+                    CalculateFinalVelocity(this, s, gt);
                 }
             }
 
@@ -95,40 +95,69 @@ namespace Bounce_Physics
             return me.Position + me.BoundingSphere.Radius*direction;
         }
         
-        public void CalculateFinalVelocity( Sphere s1, Sphere s2)
+        public void CalculateFinalVelocity( Sphere s1, Sphere s2, GameTime gt)
         {
             // http://studiofreya.com/blog/3d-math-and-physics/simple-sphere-sphere-collision-detection-and-collision-response/
 
+            // V can be broken into (V.n)n + (V -(V.n)n) i.e Vperp + Vparallel
+
+            DetermineWhereCollisionOccurred(s1, s2, gt);
+            
             var normal = Vector3.Normalize(s2.Position - s1.Position);
             
-            var x1 = Vector3.Dot(normal, s1.Velocity);
+            var x1 = Vector3.Dot(s1.Velocity, normal); //V.N
 
-            var v1x = normal * x1;
+            var v1Parallel = normal * x1; // PARALLEL
 
-            var v1y = s1.Velocity - v1x;
+            var v1Perpendicular = s1.Velocity - v1Parallel; // PERP
 
             var m1 = s1.Mass;
-
+            
             // The other sphere
             normal = normal*-1;
             
             var x2 = Vector3.Dot(normal, s2.Velocity);
 
-            var v2x = normal*x2;
+            var v2Parallel = normal*x2;
 
-            var v2y = s2.Velocity - v2x;
+            var v2Perpendicular = s2.Velocity - v2Parallel;
 
             var m2 = s2.Mass;
 
-            s1.Velocity = v1x*((m1 - m2)/(m2 + m2)) + v2x*((2*m2)/(m1 + m2)) + v1y;
+            s1.Velocity = (v1Parallel*((m1 - m2)/(m2 + m2)) + v2Parallel*((2*m2)/(m1 + m2))) + v1Perpendicular;
+            //v perp + v para (doesnt change)
 
-            s2.Velocity = v1x*((2*m1)/(m1 + m2)) + v2x*((m2 - m1)/(m1 + m2)) + v2y;
+            s2.Velocity = (v1Parallel*((2*m1)/(m1 + m2)) + v2Parallel*((m2 - m1)/(m1 + m2))) + v2Perpendicular;
+            
+        }
 
+        private void DetermineWhenActualCollisonOccurred(Sphere s1, Sphere s2, GameTime gt)
+        {
+            // where are they now
+            // based on velocity 
+        }
 
+        private void DetermineWhereCollisionOccurred(Sphere s1, Sphere s2, GameTime gt)
+        {
+            // Determine over lap
+            var overlap = Vector3.Distance(s1.Position, s2.Position);
+            
+            var gcd = GreatestCommonDenominator(s1.Velocity.Length(), s2.Velocity.Length());
+
+            var s1Portion = s1.Velocity.Length()/gcd;
+            var s2Portion = s2.Velocity.Length()/gcd;
+
+            var s1Adjusted = (overlap/(s1Portion + s2Portion))*s1Portion;
+            var s2Adjusted = (overlap/(s1Portion + s2Portion))*s2Portion;
 
         }
 
-
-        
+        private float GreatestCommonDenominator(float a, float b)
+        {
+            // http://en.wikipedia.org/wiki/Euclidean_algorithm
+            if (b == 0)
+                return a;
+            return GreatestCommonDenominator(b, a%b);
+        }
     }
 }

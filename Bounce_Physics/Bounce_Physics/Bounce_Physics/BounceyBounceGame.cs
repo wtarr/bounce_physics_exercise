@@ -35,13 +35,13 @@ namespace Bounce_Physics
             // TODO: Add your initialization logic here
             _camera = new Camera(this, graphics);
 
-            Sphere s1 = new Sphere(this, _camera, new Vector3(-20, -2, -2), new Vector3(10, 0, 0), 10);
-            Sphere s2 = new Sphere(this, _camera, new Vector3(20, 2, 2), new Vector3(-10, 0, 0), 5);
-            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -20), new Vector3(0, 0, 10), 5);
+            Sphere s1 = new Sphere(this, _camera, new Vector3(-20, 0, 0), new Vector3(10, 0, 0), 5);
+            Sphere s2 = new Sphere(this, _camera, new Vector3(20, 0, 0), new Vector3(-10, 0, 0), 5);
+            //Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -20), new Vector3(0, 0, 10), 5);
 
             CollidableList.Add(s1);
             CollidableList.Add(s2);
-            CollidableList.Add(s3);
+            //CollidableList.Add(s3);
 
             base.Initialize();
         }

@@ -22,20 +22,24 @@ namespace Bounce_Physics
         protected BoundingSphere BoundingSphere;
         protected Vector3 defuseColor;
 
-        
-
-        public float Rotation { get; set; }
-        public Vector3 Position { get; set; }
-        public Vector3 Velocity { get; set; }
-        public float Mass { get; set; }
+        //protected float Rotation;
+        protected Vector3 Position;
+        protected Vector3 Velocity;
+        protected float Mass;
+        protected Vector3 Up, Forward, Right;
+        protected float RotationSpeed;
 
         public GameObject(Game game, Camera camera)
             : base(game)
         {
             _camera = camera;
-            Rotation = 0.0f;
+            
             Position = Vector3.Zero;
             defuseColor = new Vector3(0, 0, 255);
+            Up = Vector3.Up;
+            Forward = Vector3.Forward;
+            Right = Vector3.Right;
+            RotationSpeed = 0.1f;
 
             game.Components.Add(this);
 
@@ -58,7 +62,38 @@ namespace Bounce_Physics
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            RotateAboutRightAxis(gameTime);
+            
             base.Update(gameTime);
+        }
+
+        public void RotateAboutUpAxis(GameTime gameTime)
+        {
+            // Create the rotation matrix
+            Matrix m = Matrix.CreateFromAxisAngle(Up, gameTime.ElapsedGameTime.Milliseconds*RotationSpeed);
+            // Apply it to the up and the forward
+            Forward = Vector3.Transform(Forward, m);
+            
+            Right = Vector3.Transform(Right, m);
+        }
+
+        public void RotateAboutForwardAxis(GameTime gameTime)
+        {
+            // create the rotation matrix
+            Matrix m = Matrix.CreateFromAxisAngle(Forward, gameTime.ElapsedGameTime.Milliseconds*RotationSpeed);
+
+            Up = Vector3.Transform(Up, m);
+            Right = Vector3.Transform(Right, m);
+
+        }
+
+        public void RotateAboutRightAxis(GameTime gameTime)
+        {
+            Matrix m = Matrix.CreateFromAxisAngle(Right, gameTime.ElapsedGameTime.Milliseconds*RotationSpeed);
+
+            Up = Vector3.Transform(Up, m);
+            Forward = Vector3.Transform(Forward, m);
+
         }
 
         public override void Draw(GameTime gameTime)
@@ -75,9 +110,8 @@ namespace Bounce_Physics
                     foreach (BasicEffect effect in mesh.Effects)
                     {
                         effect.EnableDefaultLighting();
-                        effect.World = transforms[mesh.ParentBone.Index] *
-                                       Matrix.CreateRotationY(Rotation) *
-                                       Matrix.CreateTranslation(Position);
+                        effect.World = transforms[mesh.ParentBone.Index]*
+                                       Matrix.CreateWorld(Position, Forward, Up);
                         effect.View = _camera.CreateView();
                         effect.Projection = _camera.CreatePerspectiveFieldOfView();
                         effect.DiffuseColor = defuseColor;
