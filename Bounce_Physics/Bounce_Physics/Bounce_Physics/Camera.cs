@@ -37,7 +37,7 @@ namespace Bounce_Physics
             _graphics = graphics;
 
             Target = Vector3.Zero;
-            CameraPosition = new Vector3(0.0f, 50.0f, 20.0f);
+            CameraPosition = new Vector3(0.0f, 50.0f, 70.0f);
             AspectRatio = _graphics.GraphicsDevice.Viewport.AspectRatio;
             Orientation = Vector3.Up;
             FieldOfView = MathHelper.ToRadians(45.0f);

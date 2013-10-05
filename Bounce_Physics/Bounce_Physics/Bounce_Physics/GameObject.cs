@@ -45,6 +45,22 @@ namespace Bounce_Physics
 
         }
 
+        public GameObject(Game game, Camera camera, Model model)
+            : base(game)
+        {
+            _camera = camera;
+
+            Position = Vector3.Zero;
+            //defuseColor = new Vector3(0, 0, 255);
+            Up = Vector3.Up;
+            Forward = Vector3.Forward;
+            Right = Vector3.Right;
+            //RotationSpeed = 0.0001f;
+            Model = model;
+            game.Components.Add(this);
+
+        }
+
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
@@ -110,6 +126,12 @@ namespace Bounce_Physics
                     foreach (BasicEffect effect in mesh.Effects)
                     {
                         effect.EnableDefaultLighting();
+
+
+                        effect.AmbientLightColor = new Vector3(0.2f, 0.2f, 0.2f);
+                        effect.EmissiveColor = new Vector3(0, 0, 0);
+                        
+
                         effect.World = transforms[mesh.ParentBone.Index]*
                                        Matrix.CreateWorld(Position, Forward, Up);
                         effect.View = _camera.CreateView();
@@ -120,6 +142,7 @@ namespace Bounce_Physics
                     mesh.Draw();
                 }
             }
+
 
             base.Draw(gameTime);
         }

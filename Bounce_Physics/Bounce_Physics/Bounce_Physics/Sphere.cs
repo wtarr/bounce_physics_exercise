@@ -12,6 +12,16 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Bounce_Physics
 {
+    public enum Face
+    {
+        Top, 
+        Bottom,
+        Left,
+        Right,
+        Back,
+        Front
+    }
+
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
@@ -64,6 +74,7 @@ namespace Bounce_Physics
             
             
             HasCollisionOccured(gameTime);
+            HasWallCollisionOccured();
 
             previousPosition = Position;
 
@@ -78,6 +89,39 @@ namespace Bounce_Physics
 
 
             base.Update(gameTime);
+        }
+
+        private void HasWallCollisionOccured()
+        {
+            if (Position.X + BoundingSphere.Radius > 20)
+            {
+                CalcPlanarReaction(Face.Right);
+            }
+
+            if (Position.X - BoundingSphere.Radius < -20)
+            {
+                CalcPlanarReaction(Face.Left);
+            }
+
+            if (Position.Y - BoundingSphere.Radius < -20)
+            {
+                CalcPlanarReaction(Face.Bottom);
+            }
+
+            if (Position.Y + BoundingSphere.Radius > 20)
+            {
+                CalcPlanarReaction(Face.Top);
+            }
+
+            if (Position.Z + BoundingSphere.Radius > 20)
+            {
+                CalcPlanarReaction(Face.Front);
+            }
+
+            if (Position.Z - BoundingSphere.Radius < -20)
+            {
+                CalcPlanarReaction(Face.Back);
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -96,6 +140,7 @@ namespace Bounce_Physics
                         s.defuseColor = new Vector3(255, 0, 0);
                         ReactToCollison(this, s, gt);
                     }
+                    
                 }
             
             return false;
@@ -106,15 +151,48 @@ namespace Bounce_Physics
             Vector3 direction = Vector3.Normalize(you.Position - me.Position);
             return me.Position + me.BoundingSphere.Radius*direction;
         }
-        
-        public void ReactToCollison( Sphere s1, Sphere s2, GameTime gt)
+
+        private void CalcPlanarReaction(Face face)
         {
+
+            Vector3 normal = new Vector3();
+
+
+            switch (face)
+            {
+                case Face.Right:
+                    normal = Vector3.Right * - 1;
+                    break;
+                case Face.Left:
+                    normal = Vector3.Right;
+                    break;
+                case Face.Top:
+                    normal = Vector3.Up*-1;
+                    break;
+                case Face.Bottom:
+                    normal = Vector3.Up;
+                    break;
+                case Face.Front:
+                    normal = Vector3.Forward;
+                    break;
+                case Face.Back:
+                    normal = Vector3.Forward*-1;
+                    break;
+            }
+              
             
+            var vPerp = (Velocity * normal) * normal;
 
-            CounterOverLap(s1, s2, gt);
+            var vPara = Velocity - vPerp;
 
-            //CalcFinalVelocity(s1, s2);
+            Velocity = vPara - vPerp;
+
+
+
+
         }
+        
+        
 
         private void CalcFinalVelocity(Sphere s1, Sphere s2)
         {
@@ -148,8 +226,8 @@ namespace Bounce_Physics
 
             s2.Velocity = (v1Parallel*((2*m1)/(m1 + m2)) + v2Parallel*((m2 - m1)/(m1 + m2))) + v2Perpendicular;
         }
-        
-        private void CounterOverLap(Sphere s1, Sphere s2, GameTime gt)
+
+        private void ReactToCollison(Sphere s1, Sphere s2, GameTime gt)
         {
 
             var overlap = (s1.BoundingSphere.Radius + s2.BoundingSphere.Radius) - Vector3.Distance(s1.Position, s2.Position);

@@ -35,13 +35,21 @@ namespace Bounce_Physics
             // TODO: Add your initialization logic here
             _camera = new Camera(this, graphics);
 
-            Sphere s1 = new Sphere(this, _camera, new Vector3(-20, 0, 0), new Vector3(5, 0, 0), 10);
-            Sphere s2 = new Sphere(this, _camera, new Vector3(20, 0, 0), new Vector3(-5, 0, 0), 10);
-            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -20), new Vector3(0, 0, 5), 100);
+            Sphere s1 = new Sphere(this, _camera, new Vector3(0, 0, -15), new Vector3(10, 10, 10), 10);
+            Sphere s2 = new Sphere(this, _camera, new Vector3(15, 0, 0), new Vector3(-20, 0, 5), 10);
+            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -10), new Vector3(15, 0, 5), 10);
+
+            Sphere s4 = new Sphere(this, _camera, new Vector3(0, 15, -15), new Vector3(10, 10, 10), 10);
+            Sphere s5 = new Sphere(this, _camera, new Vector3(15, 15, 0), new Vector3(-30, 0, 5), 10);
+            Sphere s6 = new Sphere(this, _camera, new Vector3(0, 5,1), new Vector3(15, 10, 5), 10);
 
             CollidableList.Add(s1);
             CollidableList.Add(s2);
             CollidableList.Add(s3);
+
+            CollidableList.Add(s4);
+            CollidableList.Add(s5);
+            CollidableList.Add(s6);
 
             base.Initialize();
         }
@@ -50,7 +58,10 @@ namespace Bounce_Physics
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+           
+            var model = Content.Load<Model>("Models\\cube");
+            GameObject cube = new GameObject(this, _camera, model);
+
         }
 
         protected override void UnloadContent()
