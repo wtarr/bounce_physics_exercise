@@ -29,6 +29,8 @@ namespace Bounce_Physics
     {
         private Game _game;
         private Vector3 previousPosition;
+        private float Gravity = 15;
+        private const float CoeffOfRes = 0.9f;
 
         public Sphere(Game game, Camera camera, Vector3 position, Vector3 velocity, float mass)
             : base(game, camera)
@@ -77,8 +79,10 @@ namespace Bounce_Physics
             HasWallCollisionOccured();
 
             previousPosition = Position;
-
+            
             Position += Velocity * gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
+
+            Position += Gravity * Vector3.Down*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
             
             BoundingSphere.Center = Position;
 
@@ -106,6 +110,7 @@ namespace Bounce_Physics
             if (Position.Y - BoundingSphere.Radius < -20)
             {
                 CalcPlanarReaction(Face.Bottom);
+                Gravity = 0;
             }
 
             if (Position.Y + BoundingSphere.Radius > 20)
@@ -185,7 +190,7 @@ namespace Bounce_Physics
 
             var vPara = Velocity - vPerp;
 
-            Velocity = vPara - vPerp;
+            Velocity = vPara - CoeffOfRes*vPerp;
 
 
 
@@ -221,10 +226,10 @@ namespace Bounce_Physics
 
             var m2 = s2.Mass;
 
-            s1.Velocity = (v1Parallel*((m1 - m2)/(m2 + m2)) + v2Parallel*((2*m2)/(m1 + m2))) + v1Perpendicular;
+            s1.Velocity = CoeffOfRes * (v1Parallel*((m1 - m2)/(m2 + m2)) + v2Parallel*((2*m2)/(m1 + m2))) + v1Perpendicular;
             //v perp + v para (doesnt change)
 
-            s2.Velocity = (v1Parallel*((2*m1)/(m1 + m2)) + v2Parallel*((m2 - m1)/(m1 + m2))) + v2Perpendicular;
+            s2.Velocity = CoeffOfRes * (v1Parallel*((2*m1)/(m1 + m2)) + v2Parallel*((m2 - m1)/(m1 + m2))) + v2Perpendicular;
         }
 
         private void ReactToCollison(Sphere s1, Sphere s2, GameTime gt)
