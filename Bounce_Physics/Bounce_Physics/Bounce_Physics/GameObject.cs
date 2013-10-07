@@ -20,7 +20,7 @@ namespace Bounce_Physics
         private Camera _camera;
         protected Model Model;
         protected BoundingSphere BoundingSphere;
-        protected Vector3 defuseColor;
+        protected Vector3 diffuseColor;
 
         //protected float Rotation;
         protected Vector3 Position;
@@ -35,7 +35,7 @@ namespace Bounce_Physics
             _camera = camera;
             
             Position = Vector3.Zero;
-            defuseColor = new Vector3(0, 0, 255);
+            diffuseColor = new Vector3(0, 0, 255);
             Up = Vector3.Up;
             Forward = Vector3.Forward;
             Right = Vector3.Right;
@@ -51,7 +51,7 @@ namespace Bounce_Physics
             _camera = camera;
 
             Position = Vector3.Zero;
-            //defuseColor = new Vector3(0, 0, 255);
+            diffuseColor = new Vector3(255, 0, 255);
             Up = Vector3.Up;
             Forward = Vector3.Forward;
             Right = Vector3.Right;
@@ -126,7 +126,7 @@ namespace Bounce_Physics
                     foreach (BasicEffect effect in mesh.Effects)
                     {
                         effect.EnableDefaultLighting();
-
+                       
 
                         effect.AmbientLightColor = new Vector3(0.2f, 0.2f, 0.2f);
                         effect.EmissiveColor = new Vector3(0, 0, 0);
@@ -136,7 +136,7 @@ namespace Bounce_Physics
                                        Matrix.CreateWorld(Position, Forward, Up);
                         effect.View = _camera.CreateView();
                         effect.Projection = _camera.CreatePerspectiveFieldOfView();
-                        effect.DiffuseColor = defuseColor;
+                        effect.DiffuseColor = diffuseColor;
                     }
 
                     mesh.Draw();

@@ -26,6 +26,8 @@ namespace Bounce_Physics
         public BounceyBounceGame()
         {
             graphics = new GraphicsDeviceManager(this);
+           
+            
             Content.RootDirectory = "Content";
             CollidableList = new List<IDrawable>();
         }
@@ -35,13 +37,13 @@ namespace Bounce_Physics
             // TODO: Add your initialization logic here
             _camera = new Camera(this, graphics);
 
-            Sphere s1 = new Sphere(this, _camera, new Vector3(0, 0, -15), new Vector3(10, 10, 10), 10);
-            Sphere s2 = new Sphere(this, _camera, new Vector3(15, 0, 0), new Vector3(-20, 0, 5), 10);
-            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -10), new Vector3(15, 0, 5), 10);
+            Sphere s1 = new Sphere(this, _camera, new Vector3(0, 0, -10), new Vector3(50, 10, 10), 10);
+            Sphere s2 = new Sphere(this, _camera, new Vector3(12, 0, 0), new Vector3(-70, 0, 5), 10);
+            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -10), new Vector3(75, 0, 5), 10);
 
-            Sphere s4 = new Sphere(this, _camera, new Vector3(0, 15, -15), new Vector3(10, 10, 10), 10);
-            Sphere s5 = new Sphere(this, _camera, new Vector3(15, 15, 0), new Vector3(-30, 0, 5), 10);
-            Sphere s6 = new Sphere(this, _camera, new Vector3(0, 5,1), new Vector3(15, 10, 5), 10);
+            Sphere s4 = new Sphere(this, _camera, new Vector3(0, 14, -11), new Vector3(50, 10, 10), 10);
+            Sphere s5 = new Sphere(this, _camera, new Vector3(14, 13, 0), new Vector3(-40, 0, 5), 10);
+            Sphere s6 = new Sphere(this, _camera, new Vector3(0, 5,1), new Vector3(25, 10, 5), 10);
 
             CollidableList.Add(s1);
             CollidableList.Add(s2);
@@ -50,7 +52,7 @@ namespace Bounce_Physics
             CollidableList.Add(s4);
             CollidableList.Add(s5);
             CollidableList.Add(s6);
-
+      
             base.Initialize();
         }
         
@@ -85,7 +87,7 @@ namespace Bounce_Physics
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            GraphicsDevice.RasterizerState = RasterizerState.CullNone;
             base.Draw(gameTime);
         }
     }

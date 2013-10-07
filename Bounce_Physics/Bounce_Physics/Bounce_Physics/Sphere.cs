@@ -29,8 +29,9 @@ namespace Bounce_Physics
     {
         private Game _game;
         private Vector3 previousPosition;
-        private float Gravity = 15;
-        private const float CoeffOfRes = 0.9f;
+        private float Gravity = 9.81f;
+        private const float CoeffOfRes = 0.75f;
+        private const int Bounds = 20;
 
         public Sphere(Game game, Camera camera, Vector3 position, Vector3 velocity, float mass)
             : base(game, camera)
@@ -76,13 +77,15 @@ namespace Bounce_Physics
             
             
             HasCollisionOccured(gameTime);
-            HasWallCollisionOccured();
+            HasWallCollisionOccured(gameTime);
 
             previousPosition = Position;
+
+           Velocity += Gravity * Vector3.Down*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
             
             Position += Velocity * gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
-            Position += Gravity * Vector3.Down*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
+            //Position += Gravity * Vector3.Down*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
             
             BoundingSphere.Center = Position;
 
@@ -95,37 +98,37 @@ namespace Bounce_Physics
             base.Update(gameTime);
         }
 
-        private void HasWallCollisionOccured()
+        private void HasWallCollisionOccured(GameTime gt)
         {
-            if (Position.X + BoundingSphere.Radius > 20)
+            if (Position.X + BoundingSphere.Radius > Bounds)
             {
-                CalcPlanarReaction(Face.Right);
+                CalcPlanarReaction(Face.Right, Math.Abs(Bounds - (Position.X + BoundingSphere.Radius)), gt);
             }
 
-            if (Position.X - BoundingSphere.Radius < -20)
+            if (Position.X - BoundingSphere.Radius < -Bounds)
             {
-                CalcPlanarReaction(Face.Left);
+                CalcPlanarReaction(Face.Left, Math.Abs(-Bounds + Math.Abs(Position.X - BoundingSphere.Radius)), gt);
             }
 
-            if (Position.Y - BoundingSphere.Radius < -20)
+            if (Position.Y - BoundingSphere.Radius < -Bounds)
             {
-                CalcPlanarReaction(Face.Bottom);
-                Gravity = 0;
+                CalcPlanarReaction(Face.Bottom, Math.Abs(-Bounds + Math.Abs(Position.Y - BoundingSphere.Radius)), gt);
+              
             }
 
-            if (Position.Y + BoundingSphere.Radius > 20)
+            if (Position.Y + BoundingSphere.Radius > Bounds)
             {
-                CalcPlanarReaction(Face.Top);
+                CalcPlanarReaction(Face.Top, Math.Abs(Bounds - (Position.Y + BoundingSphere.Radius)), gt);
             }
 
-            if (Position.Z + BoundingSphere.Radius > 20)
+            if (Position.Z + BoundingSphere.Radius > Bounds)
             {
-                CalcPlanarReaction(Face.Front);
+                CalcPlanarReaction(Face.Front, Math.Abs(Bounds - (Position.Z + BoundingSphere.Radius)), gt);
             }
 
-            if (Position.Z - BoundingSphere.Radius < -20)
+            if (Position.Z - BoundingSphere.Radius < -Bounds)
             {
-                CalcPlanarReaction(Face.Back);
+                CalcPlanarReaction(Face.Back, Math.Abs(-Bounds + Math.Abs(Position.Z - BoundingSphere.Radius)), gt);
             }
         }
 
@@ -142,7 +145,7 @@ namespace Bounce_Physics
                     Sphere s = sphere as Sphere;
                     if (BoundingSphere.Intersects(s.BoundingSphere) && !s.Equals(this))
                     {
-                        s.defuseColor = new Vector3(255, 0, 0);
+                        s.diffuseColor = new Vector3(255, 0, 0);
                         ReactToCollison(this, s, gt);
                     }
                     
@@ -157,16 +160,42 @@ namespace Bounce_Physics
             return me.Position + me.BoundingSphere.Radius*direction;
         }
 
-        private void CalcPlanarReaction(Face face)
+        private void CalcPlanarReaction(Face face, float overlap, GameTime gt)
         {
 
+            //CalculateFinalVelocityFromPlanarImpact(face);
+            
+            var u = Velocity.Length();
+
+            var t = overlap / u;
+
+            var timeOfCollision = gt.ElapsedGameTime.Milliseconds / 1000.0f - t;
+
+            Position = previousPosition + Velocity * timeOfCollision;
+            //s2.Position = s2.previousPosition + s2.Velocity * timeOfCollision;
+            //var distTest = Vector3.Distance(s1.Position, s2.Position);
+
+            //CalcFinalVelocity(s1, s2);
+            CalculateFinalVelocityFromPlanarImpact(face);
+            //// Catch up to current time
+
+            var diff = gt.ElapsedGameTime.Milliseconds / 1000.0f - timeOfCollision;
+
+            Position += Velocity * diff;
+            //s2.Position += s2.Velocity * diff;
+
+
+        }
+
+        private void CalculateFinalVelocityFromPlanarImpact(Face face)
+        {
             Vector3 normal = new Vector3();
 
 
             switch (face)
             {
                 case Face.Right:
-                    normal = Vector3.Right * - 1;
+                    normal = Vector3.Right*- 1;
                     break;
                 case Face.Left:
                     normal = Vector3.Right;
@@ -184,20 +213,15 @@ namespace Bounce_Physics
                     normal = Vector3.Forward*-1;
                     break;
             }
-              
-            
-            var vPerp = (Velocity * normal) * normal;
+
+
+            var vPerp = (Velocity*normal)*normal;
 
             var vPara = Velocity - vPerp;
 
             Velocity = vPara - CoeffOfRes*vPerp;
-
-
-
-
         }
-        
-        
+
 
         private void CalcFinalVelocity(Sphere s1, Sphere s2)
         {

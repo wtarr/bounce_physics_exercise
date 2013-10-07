@@ -10,10 +10,10 @@ FBXHeaderExtension:  {
 		Version: 1000
 		Year: 2013
 		Month: 10
-		Day: 06
-		Hour: 11
-		Minute: 22
-		Second: 43
+		Day: 07
+		Hour: 12
+		Minute: 34
+		Second: 03
 		Millisecond: 0
 	}
 	Creator: "FBX SDK/FBX Plugins build 20070228"
@@ -21,7 +21,7 @@ FBXHeaderExtension:  {
 		FlagPLE: 0
 	}
 }
-CreationTime: "2013-10-06 11:22:43:000"
+CreationTime: "2013-10-07 12:34:03:000"
 Creator: "Blender version 2.68 (sub 0)"
 
 ; Object definitions
@@ -29,7 +29,7 @@ Creator: "Blender version 2.68 (sub 0)"
 
 Definitions:  {
 	Version: 100
-	Count: 4
+	Count: 3
 	ObjectType: "Model" {
 		Count: 1
 	}
@@ -37,7 +37,7 @@ Definitions:  {
 		Count: 1
 	}
 	ObjectType: "Material" {
-		Count: 2
+		Count: 1
 	}
 	ObjectType: "Pose" {
 		Count: 1
@@ -145,53 +145,12 @@ Objects:  {
 			 ,0.707083344459534,0.000000000000000,0.707083344459534,0.577349185943604,-0.577349185943604,0.577349185943604
 			 ,-0.577349185943604,-0.577349185943604,0.577349185943604,-0.707083344459534,0.000000000000000,0.707083344459534
 		}
-		LayerElementMaterial: 0 {
-			Version: 101
-			Name: ""
-			MappingInformationType: "AllSame"
-			ReferenceInformationType: "IndexToDirect"
-			Materials: 0
-		}
 		Layer: 0 {
 			Version: 100
 			LayerElement:  {
 				Type: "LayerElementNormal"
 				TypedIndex: 0
 			}
-			LayerElement:  {
-				Type: "LayerElementMaterial"
-				TypedIndex: 0
-			}
-		}
-	}
-	Material: "Material::Material", "" {
-		Version: 102
-		ShadingModel: "lambert"
-		MultiLayer: 0
-		Properties60:  {
-			Property: "ShadingModel", "KString", "", "Lambert"
-			Property: "MultiLayer", "bool", "",0
-			Property: "EmissiveColor", "ColorRGB", "",0.0000,0.0411,0.8000
-			Property: "EmissiveFactor", "double", "",0.0000
-			Property: "AmbientColor", "ColorRGB", "",0.0000,0.0000,0.0000
-			Property: "AmbientFactor", "double", "",1.0000
-			Property: "DiffuseColor", "ColorRGB", "",0.0000,0.0411,0.8000
-			Property: "DiffuseFactor", "double", "",0.8000
-			Property: "Bump", "Vector3D", "",0,0,0
-			Property: "TransparentColor", "ColorRGB", "",1,1,1
-			Property: "TransparencyFactor", "double", "",0.2000
-			Property: "SpecularColor", "ColorRGB", "",1.0000,1.0000,1.0000
-			Property: "SpecularFactor", "double", "",0.2500
-			Property: "ShininessExponent", "double", "",80.0
-			Property: "ReflectionColor", "ColorRGB", "",0,0,0
-			Property: "ReflectionFactor", "double", "",1
-			Property: "Emissive", "ColorRGB", "",0,0,0
-			Property: "Ambient", "ColorRGB", "",0.0,0.0,0.0
-			Property: "Diffuse", "ColorRGB", "",0.0,0.0,0.8
-			Property: "Specular", "ColorRGB", "",1.0,1.0,1.0
-			Property: "Shininess", "double", "",9.6
-			Property: "Opacity", "double", "",0.8
-			Property: "Reflectivity", "double", "",0
 		}
 	}
 	Material: "Material::unnamed", "" {
@@ -271,8 +230,6 @@ Relations:  {
 	}
 	Model: "Model::Camera Switcher", "CameraSwitcher" {
 	}
-	Material: "Material::Material", "" {
-	}
 	Material: "Material::unnamed", "" {
 	}
 }
@@ -282,7 +239,6 @@ Relations:  {
 
 Connections:  {
 	Connect: "OO", "Model::Cube", "Model::Scene"
-	Connect: "OO", "Material::Material", "Model::Cube"
 }
 ;Takes and animation section
 ;----------------------------------------------------
