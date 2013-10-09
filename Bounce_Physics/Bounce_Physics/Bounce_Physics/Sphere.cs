@@ -84,16 +84,8 @@ namespace Bounce_Physics
            Velocity += Gravity * Vector3.Down*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
             
             Position += Velocity * gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
-
-            //Position += Gravity * Vector3.Down*gameTime.ElapsedGameTime.Milliseconds/1000.0f;
             
             BoundingSphere.Center = Position;
-
-            //BoundingSphere.Radius = 5f;
-
-
-
-
 
             base.Update(gameTime);
         }
@@ -172,19 +164,13 @@ namespace Bounce_Physics
             var timeOfCollision = gt.ElapsedGameTime.Milliseconds / 1000.0f - t;
 
             Position = previousPosition + Velocity * timeOfCollision;
-            //s2.Position = s2.previousPosition + s2.Velocity * timeOfCollision;
-            //var distTest = Vector3.Distance(s1.Position, s2.Position);
-
-            //CalcFinalVelocity(s1, s2);
+            
             CalculateFinalVelocityFromPlanarImpact(face);
+            
             //// Catch up to current time
-
             var diff = gt.ElapsedGameTime.Milliseconds / 1000.0f - timeOfCollision;
 
             Position += Velocity * diff;
-            //s2.Position += s2.Velocity * diff;
-
-
         }
 
         private void CalculateFinalVelocityFromPlanarImpact(Face face)
@@ -281,25 +267,6 @@ namespace Bounce_Physics
 
             s1.Position += s1.Velocity*diff;
             s2.Position += s2.Velocity*diff;
-
-            //// Determine over lap
-            //var overlap = Math.Abs((s1.BoundingSphere.Radius + s2.BoundingSphere.Radius) - Vector3.Distance(s1.Position, s2.Position));
-
-            //var gcd = GreatestCommonDenominator(s1.Velocity.Length(), s2.Velocity.Length());
-            //var s1Portion = s1.Velocity.Length()/gcd;
-            //var s2Portion = s2.Velocity.Length()/gcd;
-
-            //var s1Adjusted = (overlap/(s1Portion + s2Portion))*s1Portion;
-            //var s2Adjusted = (overlap/(s1Portion + s2Portion))*s2Portion;
-
-        }
-
-        private float GreatestCommonDenominator(float a, float b)
-        {
-            // http://en.wikipedia.org/wiki/Euclidean_algorithm
-            if (b == 0)
-                return a;
-            return GreatestCommonDenominator(b, a%b);
         }
     }
 }
