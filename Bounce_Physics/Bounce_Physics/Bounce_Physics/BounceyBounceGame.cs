@@ -37,13 +37,13 @@ namespace Bounce_Physics
             // TODO: Add your initialization logic here
             _camera = new Camera(this, graphics);
 
-            Sphere s1 = new Sphere(this, _camera, new Vector3(0, 0, -10), new Vector3(50, 10, 10), 10);
-            Sphere s2 = new Sphere(this, _camera, new Vector3(12, 0, 0), new Vector3(-70, 0, 5), 10);
-            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -10), new Vector3(75, 0, 5), 10);
+            Sphere s1 = new Sphere(this, _camera, new Vector3(0, 0, -10), new Vector3(50, 10, 10), 10, graphics);
+            Sphere s2 = new Sphere(this, _camera, new Vector3(12, 0, 0), new Vector3(-70, 0, 5), 10, graphics);
+            Sphere s3 = new Sphere(this, _camera, new Vector3(0, 1, -10), new Vector3(75, 0, 5), 10, graphics);
 
-            Sphere s4 = new Sphere(this, _camera, new Vector3(0, 14, -11), new Vector3(50, 10, 10), 10);
-            Sphere s5 = new Sphere(this, _camera, new Vector3(14, 13, 0), new Vector3(-40, 0, 5), 10);
-            Sphere s6 = new Sphere(this, _camera, new Vector3(0, 5,1), new Vector3(25, 10, 5), 10);
+            Sphere s4 = new Sphere(this, _camera, new Vector3(0, 14, -11), new Vector3(50, 10, 10), 10, graphics);
+            Sphere s5 = new Sphere(this, _camera, new Vector3(14, 13, 0), new Vector3(-40, 0, 5), 10, graphics);
+            Sphere s6 = new Sphere(this, _camera, new Vector3(0, 5, 1), new Vector3(25, 10, 5), 10, graphics);
 
             CollidableList.Add(s1);
             CollidableList.Add(s2);
@@ -62,7 +62,7 @@ namespace Bounce_Physics
             spriteBatch = new SpriteBatch(GraphicsDevice);
            
             var model = Content.Load<Model>("Models\\cube");
-            GameObject cube = new GameObject(this, _camera, model);
+            GameObject cube = new GameObject(this, _camera, model, graphics);
 
         }
 
@@ -88,6 +88,7 @@ namespace Bounce_Physics
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            
             base.Draw(gameTime);
         }
     }

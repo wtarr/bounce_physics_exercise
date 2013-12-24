@@ -33,8 +33,9 @@ namespace Bounce_Physics
         private const float CoeffOfRes = 0.75f;
         private const int Bounds = 20;
 
-        public Sphere(Game game, Camera camera, Vector3 position, Vector3 velocity, float mass)
-            : base(game, camera)
+        public Sphere(Game game, Camera camera, Vector3 position, Vector3 velocity, float mass, GraphicsDeviceManager graphics
+            )
+            : base(game, camera, graphics)
         {
             // TODO: Construct any child components here
             _game = game;

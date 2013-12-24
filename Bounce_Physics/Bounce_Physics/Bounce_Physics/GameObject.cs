@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Bounce_Physics
 {
-    
+
     public class GameObject : DrawableGameComponent
     {
 
@@ -28,28 +28,36 @@ namespace Bounce_Physics
         protected float Mass;
         protected Vector3 Up, Forward, Right;
         protected float RotationSpeed;
+        private RasterizerState origState, rasterizerState;
+        private bool _set = false;
+        private GraphicsDeviceManager _graphics;
+        private RasterizerState orig, wire;
 
-        public GameObject(Game game, Camera camera)
+        
+
+        public GameObject(Game game, Camera camera, GraphicsDeviceManager graphics)
             : base(game)
         {
             _camera = camera;
-            
+            _graphics = graphics;
             Position = Vector3.Zero;
             diffuseColor = new Vector3(0, 0, 255);
             Up = Vector3.Up;
             Forward = Vector3.Forward;
             Right = Vector3.Right;
             RotationSpeed = 0.1f;
-
+            SetRasterState();
             game.Components.Add(this);
 
         }
 
-        public GameObject(Game game, Camera camera, Model model)
+        
+
+        public GameObject(Game game, Camera camera, Model model, GraphicsDeviceManager graphics)
             : base(game)
         {
+            _graphics = graphics;
             _camera = camera;
-
             Position = Vector3.Zero;
             diffuseColor = new Vector3(255, 0, 255);
             Up = Vector3.Up;
@@ -57,10 +65,18 @@ namespace Bounce_Physics
             Right = Vector3.Right;
             //RotationSpeed = 0.0001f;
             Model = model;
+            SetRasterState();
             game.Components.Add(this);
 
         }
 
+        private void SetRasterState()
+        {
+            orig = _graphics.GraphicsDevice.RasterizerState;
+            RasterizerState w = new RasterizerState();
+            w.FillMode = FillMode.WireFrame;
+            wire = w;
+        }
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
@@ -70,6 +86,7 @@ namespace Bounce_Physics
             // TODO: Add your initialization code here
 
             base.Initialize();
+
         }
 
         /// <summary>
@@ -79,24 +96,23 @@ namespace Bounce_Physics
         public override void Update(GameTime gameTime)
         {
             RotateAboutRightAxis(gameTime);
-            
             base.Update(gameTime);
         }
 
         public void RotateAboutUpAxis(GameTime gameTime)
         {
             // Create the rotation matrix
-            Matrix m = Matrix.CreateFromAxisAngle(Up, gameTime.ElapsedGameTime.Milliseconds*RotationSpeed);
+            Matrix m = Matrix.CreateFromAxisAngle(Up, gameTime.ElapsedGameTime.Milliseconds * RotationSpeed);
             // Apply it to the up and the forward
             Forward = Vector3.Transform(Forward, m);
-            
+
             Right = Vector3.Transform(Right, m);
         }
 
         public void RotateAboutForwardAxis(GameTime gameTime)
         {
             // create the rotation matrix
-            Matrix m = Matrix.CreateFromAxisAngle(Forward, gameTime.ElapsedGameTime.Milliseconds*RotationSpeed);
+            Matrix m = Matrix.CreateFromAxisAngle(Forward, gameTime.ElapsedGameTime.Milliseconds * RotationSpeed);
 
             Up = Vector3.Transform(Up, m);
             Right = Vector3.Transform(Right, m);
@@ -105,7 +121,7 @@ namespace Bounce_Physics
 
         public void RotateAboutRightAxis(GameTime gameTime)
         {
-            Matrix m = Matrix.CreateFromAxisAngle(Right, gameTime.ElapsedGameTime.Milliseconds*RotationSpeed);
+            Matrix m = Matrix.CreateFromAxisAngle(Right, gameTime.ElapsedGameTime.Milliseconds * RotationSpeed);
 
             Up = Vector3.Transform(Up, m);
             Forward = Vector3.Transform(Forward, m);
@@ -114,9 +130,16 @@ namespace Bounce_Physics
 
         public override void Draw(GameTime gameTime)
         {
+
+            _graphics.GraphicsDevice.RasterizerState = orig;
+
             // TODO: Add your update code here
             if (Model != null)
             {
+                if (Model.Meshes[0].Name.Equals("Cube"))
+                {
+                    _graphics.GraphicsDevice.RasterizerState = wire;
+                }
 
                 Matrix[] transforms = new Matrix[Model.Bones.Count];
                 Model.CopyAbsoluteBoneTransformsTo(transforms);
@@ -126,13 +149,13 @@ namespace Bounce_Physics
                     foreach (BasicEffect effect in mesh.Effects)
                     {
                         effect.EnableDefaultLighting();
-                       
+
 
                         effect.AmbientLightColor = new Vector3(0.2f, 0.2f, 0.2f);
                         effect.EmissiveColor = new Vector3(0, 0, 0);
-                        
 
-                        effect.World = transforms[mesh.ParentBone.Index]*
+
+                        effect.World = transforms[mesh.ParentBone.Index] *
                                        Matrix.CreateWorld(Position, Forward, Up);
                         effect.View = _camera.CreateView();
                         effect.Projection = _camera.CreatePerspectiveFieldOfView();
